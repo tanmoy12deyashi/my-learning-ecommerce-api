@@ -1,0 +1,53 @@
+// CartItem model represents a single product variant added to a shopping cart.
+model CartItem {
+
+  // Unique identifier for the cart item.
+  id String @id @default(uuid())
+
+  // ID of the cart containing this item.
+  cartId String @map("cart_id")
+
+  // Relationship between the cart item and its cart.
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // ID of the parent product.
+  productId String @map("product_id")
+
+  // Relationship between the cart item and the product.
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // ID of the specific product variant added to the cart.
+  productPartId String @map("product_part_id")
+
+  // Relationship between the cart item and the specific product variant.
+  productPart ProductPart @relation(fields: [productPartId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // Number of units of this product variant in the cart.
+  quantity Int
+
+  // Price of one unit when the item was added to the cart.
+  // Stores the cart-time price so the cart can retain the price shown to the user.
+  unitPrice Decimal @map("unit_price") @db.Decimal(12, 2)
+
+  // Date and time when the item was added to the cart.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the cart item was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Prevents the same product variant from being added to the same cart more than once.
+  // Quantity should be updated instead.
+  @@unique([cartId, productPartId])
+
+  // Index for quickly finding all items in a cart.
+  @@index([cartId])
+
+  // Index for finding cart items belonging to a specific product.
+  @@index([productId])
+
+  // Index for finding cart items belonging to a specific product variant.
+  @@index([productPartId])
+
+  // Maps this Prisma model to the "cart_items" table in MySQL.
+  @@map("cart_items")
+}

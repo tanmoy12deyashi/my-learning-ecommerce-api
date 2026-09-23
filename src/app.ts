@@ -9,100 +9,118 @@ import { maintenanceMiddleware } from "./middlewares/maintenance.middleware";
 import { notFoundMiddleware } from "./middlewares/not-found.middleware";
 import { errorMiddleware } from "./middlewares/error.middleware";
 
+import { apolloServer } from "./graphql/server";
+
 import routes from "./routes";
 
 /**
- * Express Application
- *
  * Creates and configures the Express application.
  *
- * This file is responsible for registering application-level
- * middleware, API routes and global error handling.
- *
  * The HTTP server is intentionally not started here.
- * Starting the server is handled by server.ts.
  */
+export const createApp = (graphqlMiddleware: express.RequestHandler): Application => {
 
-const app: Application = express();
+    /**
+     * Express Application
+     *
+     * Creates and configures the Express application.
+     *
+     * This file is responsible for registering application-level
+     * middleware, API routes and global error handling.
+     *
+     * The HTTP server is intentionally not started here.
+     * Starting the server is handled by server.ts.
+     */
 
-/**
- * Security
- *
- * Adds security-related HTTP headers to application responses.
- */
-app.use(securityMiddleware);
+    const app: Application = express();
 
-/**
- * CORS
- *
- * Controls which external origins are allowed to access
- * the API from a browser.
- */
-app.use(corsMiddleware);
+    /**
+     * Security
+     *
+     * Adds security-related HTTP headers to application responses.
+     */
+    app.use(securityMiddleware);
 
-/**
- * Request ID
- *
- * Generates a unique ID for every incoming request.
- * The ID can be used to trace requests through application logs.
- */
-app.use(requestIdMiddleware);
+    /**
+     * CORS
+     *
+     * Controls which external origins are allowed to access
+     * the API from a browser.
+     */
+    app.use(corsMiddleware);
 
-/**
- * Request Logger
- *
- * Logs incoming requests, response status codes and
- * request processing time.
- */
-app.use(requestLoggerMiddleware);
+    /**
+     * Request ID
+     *
+     * Generates a unique ID for every incoming request.
+     * The ID can be used to trace requests through application logs.
+     */
+    app.use(requestIdMiddleware);
 
-/**
- * Body Parser
- *
- * Parses incoming JSON request bodies and makes the data
- * available through req.body.
- */
-app.use(express.json());
+    /**
+     * Request Logger
+     *
+     * Logs incoming requests, response status codes and
+     * request processing time.
+     */
+    app.use(requestLoggerMiddleware);
 
-/**
- * Rate Limiting
- *
- * Protects the API from excessive requests.
- */
-app.use(rateLimitMiddleware);
+    /**
+     * Body Parser
+     *
+     * Parses incoming JSON request bodies and makes the data
+     * available through req.body.
+     */
+    app.use(express.json());
 
-/**
- * Maintenance Mode
- *
- * Blocks normal API requests when maintenance mode is enabled.
- */
-app.use(maintenanceMiddleware);
+    /**
+     * Rate Limiting
+     *
+     * Protects the API from excessive requests.
+     */
+    app.use(rateLimitMiddleware);
 
-/**
- * API Routes
- *
- * All application routes are registered from the central
- * route registry.
- */
-app.use("/api", routes);
+    /**
+     * Maintenance Mode
+     *
+     * Blocks normal API requests when maintenance mode is enabled.
+     */
+    app.use(maintenanceMiddleware);
 
-/**
- * 404 Handler
- *
- * Handles requests for routes that do not exist.
- *
- * This must be registered after all application routes.
- */
-app.use(notFoundMiddleware);
+    /**
+     * API Routes
+     *
+     * All application routes are registered from the central
+     * route registry.
+     */
+    app.use("/api", routes);
 
-/**
- * Global Error Handler
- *
- * Handles errors passed through next(error) or thrown by
- * asynchronous request handlers.
- *
- * This must always be the last middleware.
- */
-app.use(errorMiddleware);
+    /**
+     * GraphQL API
+     *
+     * GraphQL requests are handled through the
+     * dedicated GraphQL server and schema.
+     */
+    app.use("/graphql", graphqlMiddleware);
 
-export default app;
+    /**
+     * 404 Handler
+     *
+     * Handles requests for routes that do not exist.
+     *
+     * This must be registered after all application routes.
+     */
+    app.use(notFoundMiddleware);
+
+    /**
+     * Global Error Handler
+     *
+     * Handles errors passed through next(error) or thrown by
+     * asynchronous request handlers.
+     *
+     * This must always be the last middleware.
+     */
+    app.use(errorMiddleware);
+
+    return app;
+}

@@ -12,7 +12,7 @@ import rateLimit from "express-rate-limit";
  * Rate limits can be configured globally or applied only to
  * specific endpoints such as login or password reset routes.
  */
-export const rateLimiter = rateLimit({
+export const rateLimitMiddleware = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100
 });

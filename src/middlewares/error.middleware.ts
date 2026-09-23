@@ -15,7 +15,7 @@ import { Request, Response, NextFunction } from "express";
  * Request flow:
  * Controller/Service → Error → Error Handler → HTTP Response
  */
-export const errorHandler = (
+export const errorMiddleware = (
   err: any,
   req: Request,
   res: Response,

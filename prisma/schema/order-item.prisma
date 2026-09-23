@@ -1,0 +1,57 @@
+// OrderItem model represents a specific product variant purchased in an order.
+model OrderItem {
+
+  // Unique identifier for the order item.
+  id String @id @default(uuid())
+
+  // ID of the order containing this item.
+  orderId String @map("order_id")
+
+  // Relationship between the order item and its order.
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // ID of the parent product.
+  productId String @map("product_id")
+
+  // Relationship between the order item and the product.
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // ID of the specific product variant that was purchased.
+  productPartId String @map("product_part_id")
+
+  // Relationship between the order item and the purchased product variant.
+  productPart ProductPart @relation(fields: [productPartId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // Product name stored as a snapshot at the time of purchase.
+  // This preserves the name even if the product is renamed later.
+  productName String @map("product_name") @db.VarChar(255)
+
+  // Product variant SKU stored as a snapshot at the time of purchase.
+  sku String @db.VarChar(100)
+
+  // Number of units purchased.
+  quantity Int
+
+  // Price of one unit at the time the order was placed.
+  // This should not change if the current product price changes later.
+  unitPrice Decimal @map("unit_price") @db.Decimal(12, 2)
+
+  // Total price for this order item.
+  // Typically calculated as quantity × unitPrice.
+  totalPrice Decimal @map("total_price") @db.Decimal(12, 2)
+
+  // Date and time when the order item was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Index for quickly finding all items belonging to an order.
+  @@index([orderId])
+
+  // Index for finding order items belonging to a specific product.
+  @@index([productId])
+
+  // Index for finding order items belonging to a specific product variant.
+  @@index([productPartId])
+
+  // Maps this Prisma model to the "order_items" table in MySQL.
+  @@map("order_items")
+}

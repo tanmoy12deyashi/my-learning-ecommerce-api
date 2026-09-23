@@ -14,7 +14,7 @@ import { randomUUID } from "crypto";
  * Example:
  * Request → Request ID → Logger → Controller
  */
-export const requestId = (req: any, res: any, next: any) => {
+export const requestIdMiddleware = (req: any, res: any, next: any) => {
   const id = randomUUID();
 
   req.requestId = id;

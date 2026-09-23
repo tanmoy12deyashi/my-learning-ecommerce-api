@@ -16,7 +16,7 @@ import { Request, Response } from "express";
  *        ↓
  * 404 Response
  */
-export const notFound = (req: Request, res: Response) => {
+export const notFoundMiddleware = (req: Request, res: Response) => {
   res.status(404).json({
     message: `Route ${req.method} ${req.originalUrl} not found`
   });

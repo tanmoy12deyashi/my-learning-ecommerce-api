@@ -1,0 +1,45 @@
+// User model stores authentication, account and role information.
+model User {
+  // Unique identifier for the user.
+  id           String   @id @default(uuid())
+
+  // User's display/full name.
+  name         String   @db.VarChar(255)
+
+  // User's email address. Must be unique across all users.
+  email        String   @unique @db.VarChar(255)
+
+  // Hashed user password. Never store the plain-text password.
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+
+  // Defines the user's application role.
+  role     UserRole @default(CUSTOMER)
+
+  // Indicates whether the user's account is currently active.
+  isActive Boolean  @default(true) @map("is_active")
+
+  // Relationships
+  // Products created by this user, typically when the user is an admin.
+  createdProducts Product[]
+  // User's wishlist. A user can have only one wishlist.
+  wishlist        Wishlist?
+  // Shopping carts belonging to the user.
+  carts           Cart[]
+  // Orders placed by the user.
+  orders          Order[]
+
+  // Date and time when the user was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the user was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Index for faster queries based on user role.
+  @@index([role])
+
+  // Index for faster queries based on account status.
+  @@index([isActive])
+
+  // Maps the Prisma model to the "users" table in MySQL.
+  @@map("users")
+}

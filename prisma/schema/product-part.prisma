@@ -1,0 +1,67 @@
+// ProductPart model stores individual variants/parts of a product.
+// Example: a T-shirt can have Black/Medium and White/Large as separate parts.
+model ProductPart {
+
+  // Unique identifier for the product part.
+  id String @id @default(uuid())
+
+  // ID of the parent product this part belongs to.
+  productId String @map("product_id")
+
+  // Relationship between the product part and its parent product.
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Stock Keeping Unit used to uniquely identify this product part.
+  sku String @unique @db.VarChar(100)
+
+  // Name of the product part or variant.
+  // Example: "Black - Size 9".
+  name String @db.VarChar(150)
+
+  // Selling price of this specific product part.
+  price Decimal @db.Decimal(12, 2)
+
+  // Number of units currently available in stock.
+  stockQuantity Int @map("stock_quantity")
+
+  // Additional variant-specific information.
+  // Example:
+  // {
+  //   "color": "Black",
+  //   "size": "9"
+  // }
+  attributes Json?
+
+  // Indicates whether this product part is currently available.
+  isActive Boolean @default(true) @map("is_active")
+
+  // Images associated with this specific product part.
+  images ProductImage[]
+
+  // Wishlist items that reference this product part.
+  wishlistItems WishlistItem[]
+
+  // Cart items that reference this product part.
+  cartItems CartItem[]
+
+  // Order items that reference this product part.
+  orderItems OrderItem[]
+
+  // Date and time when the product part was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the product part was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Index for finding all parts belonging to a product.
+  @@index([productId])
+
+  // Index for filtering active/inactive product parts.
+  @@index([isActive])
+
+  // Composite index for finding active parts of a specific product.
+  @@index([productId, isActive])
+
+  // Maps this Prisma model to the "product_parts" table in MySQL.
+  @@map("product_parts")
+}

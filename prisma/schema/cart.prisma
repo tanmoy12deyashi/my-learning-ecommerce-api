@@ -1,0 +1,38 @@
+// Cart model stores the shopping cart belonging to a user.
+model Cart {
+
+  // Unique identifier for the cart.
+  id String @id @default(uuid())
+
+  // ID of the user who owns this cart.
+  userId String @map("user_id")
+
+  // Relationship between the cart and its owner.
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Current state of the cart.
+  // Example: ACTIVE, CHECKED_OUT or ABANDONED.
+  status CartStatus @default(ACTIVE)
+
+  // Items currently stored in this cart.
+  items CartItem[]
+
+  // Date and time when the cart was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the cart was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Index for quickly finding carts belonging to a specific user.
+  @@index([userId])
+
+  // Index for filtering carts by their current status.
+  @@index([status])
+
+  // Composite index for finding a user's carts by status.
+  // Useful for queries such as finding the user's active cart.
+  @@index([userId, status])
+
+  // Maps this Prisma model to the "carts" table in MySQL.
+  @@map("carts")
+}

@@ -1,0 +1,43 @@
+// WishlistItem model represents a single product saved in a user's wishlist.
+model WishlistItem {
+
+  // Unique identifier for the wishlist item.
+  id String @id @default(uuid())
+
+  // ID of the wishlist containing this item.
+  wishlistId String @map("wishlist_id")
+
+  // Relationship between the wishlist item and its wishlist.
+  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // ID of the product saved in the wishlist.
+  productId String @map("product_id")
+
+  // Relationship between the wishlist item and the product.
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Optional ID of the specific product variant saved in the wishlist.
+  // Null means the user saved the product without selecting a specific variant.
+  productPartId String? @map("product_part_id")
+
+  // Optional relationship between the wishlist item and a product variant.
+  productPart ProductPart? @relation(fields: [productPartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Date and time when the product was added to the wishlist.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Prevents the same product/variant from being added to the same wishlist more than once.
+  @@unique([wishlistId, productId, productPartId])
+
+  // Index for quickly finding all items in a wishlist.
+  @@index([wishlistId])
+
+  // Index for quickly finding wishlists containing a specific product.
+  @@index([productId])
+
+  // Index for quickly finding wishlist items for a specific product variant.
+  @@index([productPartId])
+
+  // Maps this Prisma model to the "wishlist_items" table in MySQL.
+  @@map("wishlist_items")
+}

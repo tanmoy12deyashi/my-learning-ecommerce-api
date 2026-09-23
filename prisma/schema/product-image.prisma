@@ -1,0 +1,47 @@
+// ProductImage model stores images associated with a product or a specific product variant.
+model ProductImage {
+
+  // Unique identifier for the image record.
+  id String @id @default(uuid())
+
+  // ID of the product this image belongs to.
+  productId String @map("product_id")
+
+  // Relationship between the image and the parent product.
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Optional ID of the specific product variant this image belongs to.
+  // Null means the image belongs to the overall product.
+  productPartId String? @map("product_part_id")
+
+  // Optional relationship between the image and a specific product variant.
+  productPart ProductPart? @relation(fields: [productPartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // URL or path where the product image is stored.
+  imageUrl String @map("image_url") @db.Text
+
+  // Indicates whether this is the primary image for the product or variant.
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  // Controls the display order of images.
+  // Lower values are displayed first.
+  sortOrder Int @default(0) @map("sort_order")
+
+  // Date and time when the image record was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Index for quickly finding all images belonging to a product.
+  @@index([productId])
+
+  // Index for quickly finding images belonging to a specific product variant.
+  @@index([productPartId])
+
+  // Composite index for efficiently retrieving product images in display order.
+  @@index([productId, sortOrder])
+
+  // Composite index for efficiently retrieving variant images in display order.
+  @@index([productPartId, sortOrder])
+
+  // Maps this Prisma model to the "product_images" table in MySQL.
+  @@map("product_images")
+}

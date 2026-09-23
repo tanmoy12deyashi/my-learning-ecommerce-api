@@ -11,4 +11,4 @@ import helmet from "helmet";
  * It should normally be registered near the beginning of the
  * application middleware chain.
  */
-export const security = helmet();
+export const securityMiddleware = helmet();

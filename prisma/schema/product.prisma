@@ -1,0 +1,65 @@
+// Product model stores the main information about a product.
+model Product {
+  // Unique identifier for the product.
+  id          String        @id @default(uuid())
+
+  // Name/title of the product.
+  name        String        @db.VarChar(255)
+
+  // URL-friendly unique identifier used for product URLs.
+  slug        String        @unique @db.VarChar(300)
+
+  // Detailed description of the product.
+  // Optional because a product can be created without a description.
+  description String?       @db.Text
+
+  // Brand associated with the product.
+  // Optional because not every product needs a brand.
+  brand       String?       @db.VarChar(100)
+
+  // Product category.
+  // Optional because category management may be introduced separately later.
+  category    String?       @db.VarChar(100)
+
+  // Current status of the product, such as ACTIVE or INACTIVE.
+  status      ProductStatus @default(ACTIVE)
+
+  // ID of the user/admin who created this product.
+  createdById String @map("created_by")
+
+  // Relationship between Product and User
+  createdBy   User   @relation( fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // Relationships
+  // Product variants or parts
+  parts  ProductPart[]
+  // Product images
+  images ProductImage[]
+  // Wishlist entries containing this product
+  wishlistItems WishlistItem[]
+  // Cart items containing this product
+  cartItems     CartItem[]
+  // Order items containing this product
+  orderItems    OrderItem[]
+
+  // Product creation timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Product last update timestamp
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Index for finding products created by a specific user
+  @@index([createdById])
+
+  // Index for filtering products by status
+  @@index([status])
+
+  // Index for filtering products by brand
+  @@index([brand])
+
+  // Index for filtering products by category
+  @@index([category])
+
+  // MySQL table name
+  @@map("products")
+}

@@ -1,0 +1,25 @@
+// Wishlist model stores the products a user wants to save for later.
+model Wishlist {
+
+  // Unique identifier for the wishlist.
+  id String @id @default(uuid())
+
+  // ID of the user who owns the wishlist.
+  // @unique ensures that each user can have only one wishlist.
+  userId String @unique @map("user_id")
+
+  // Relationship between the wishlist and its owner.
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Products saved in this wishlist.
+  items WishlistItem[]
+
+  // Date and time when the wishlist was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the wishlist was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Maps this Prisma model to the "wishlists" table in MySQL.
+  @@map("wishlists")
+}

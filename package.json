@@ -1,5 +1,5 @@
 {
-  "name": "my-learning-school-app-api",
+  "name": "my-learning-ecommerce-api",
   "version": "1.0.0",
   "description": "",
   "main": "src/server.ts",
@@ -22,20 +22,27 @@
   },
   "homepage": "https://github.com/tanmoy12deyashi/my-learning-school-app-api#readme",
   "dependencies": {
+    "@apollo/server": "^5.5.1",
+    "@as-integrations/express5": "^1.1.2",
+    "@prisma/client": "^7.10.0",
     "connect-timeout": "^1.9.1",
     "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
     "express-rate-limit": "^8.7.0",
+    "graphql": "^16.14.2",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
+    "prisma": "^7.10.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/connect-timeout": "^1.9.0",
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.2.0"
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.6.2"
   }
 }

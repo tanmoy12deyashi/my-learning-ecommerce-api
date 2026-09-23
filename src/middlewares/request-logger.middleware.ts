@@ -14,7 +14,7 @@
  * This is useful for debugging, monitoring and troubleshooting
  * issues in development and production.
  */
-export const logger = (req: any, res: any, next: any) => {
+export const requestLoggerMiddleware = (req: any, res: any, next: any) => {
   const start = Date.now();
 
   res.on("finish", () => {

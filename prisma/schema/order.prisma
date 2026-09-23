@@ -1,0 +1,58 @@
+// Order model stores a completed or ongoing purchase made by a user.
+model Order {
+
+  // Unique identifier for the order.
+  id String @id @default(uuid())
+
+  // ID of the user who placed the order.
+  userId String @map("user_id")
+
+  // Relationship between the order and the user who placed it.
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  // Human-readable unique order number shown to the customer.
+  orderNumber String @unique @map("order_number") @db.VarChar(50)
+
+  // Current status of the order.
+  // Example: PENDING, CONFIRMED, CANCELLED or COMPLETED.
+  status OrderStatus @default(PENDING)
+
+  // Total amount of all order items before discounts and shipping.
+  subtotal Decimal @db.Decimal(12, 2)
+
+  // Total discount applied to the order.
+  discount Decimal @default(0) @db.Decimal(12, 2)
+
+  // Shipping cost charged for the order.
+  shippingAmount Decimal @default(0) @map("shipping_amount") @db.Decimal(12, 2)
+
+  // Final amount payable by the customer.
+  // Typically calculated as:
+  // subtotal - discount + shippingAmount
+  totalAmount Decimal @map("total_amount") @db.Decimal(12, 2)
+
+  // Products and variants included in this order.
+  items OrderItem[]
+
+  // Date and time when the order was created.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Date and time when the order was last updated.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Index for quickly finding orders belonging to a specific user.
+  @@index([userId])
+
+  // Index for filtering orders by status.
+  @@index([status])
+
+  // Index for sorting or filtering orders by creation date.
+  @@index([createdAt])
+
+  // Composite index for finding a user's orders by status.
+  // Useful for queries such as finding all pending orders for a user.
+  @@index([userId, status])
+
+  // Maps this Prisma model to the "orders" table in MySQL.
+  @@map("orders")
+}
