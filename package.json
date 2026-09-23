@@ -20,5 +20,22 @@
   "bugs": {
     "url": "https://github.com/tanmoy12deyashi/my-learning-school-app-api/issues"
   },
-  "homepage": "https://github.com/tanmoy12deyashi/my-learning-school-app-api#readme"
+  "homepage": "https://github.com/tanmoy12deyashi/my-learning-school-app-api#readme",
+  "dependencies": {
+    "connect-timeout": "^1.9.1",
+    "cors": "^2.8.6",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.4.0",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/connect-timeout": "^1.9.0",
+    "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0"
+  }
 }
